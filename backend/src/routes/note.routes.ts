@@ -1,0 +1,25 @@
+import { Router } from 'express';
+import { NoteController } from '../controllers/note.controller.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { validate } from '../middlewares/validate.middleware.js';
+import { aiGenerateLimiter } from '../middlewares/rateLimiter.middleware.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import {
+  createNoteSchema,
+  updateNoteSchema,
+  generateNoteFromSessionSchema,
+} from '../schemas/note.schema.js';
+
+const router = Router();
+
+router.use(authMiddleware);
+
+router.get('/', asyncHandler(NoteController.getNotes));
+router.post('/', validate(createNoteSchema), asyncHandler(NoteController.createNote));
+router.get('/:id', asyncHandler(NoteController.getNoteById));
+router.patch('/:id', validate(updateNoteSchema), asyncHandler(NoteController.updateNote));
+router.delete('/:id', asyncHandler(NoteController.deleteNote));
+router.post('/generate-from-session', aiGenerateLimiter, validate(generateNoteFromSessionSchema), asyncHandler(NoteController.generateFromSession));
+router.post('/:id/convert-to-flashcards', asyncHandler(NoteController.convertToFlashcards));
+
+export default router;

@@ -1,6 +1,17 @@
 {
+  "name": "lumina-ai",
+  "version": "1.0.0",
+  "description": "Lumina AI - Trợ lý học tập thông minh 100% TypeScript",
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "watch:backend": "tsc -w -p backend/tsconfig.json --preserveWatchOutput",
+    "seed": "npm --prefix backend run seed",
+    "test": "npm --prefix backend test"
+  },
   "dependencies": {
-    "dotenv": "^18.0.1",
-    "express": "^5.2.1"
+    "dotenv": "^16.4.5"
   }
 }

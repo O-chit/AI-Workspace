@@ -1,0 +1,17 @@
+import { Router } from 'express';
+import { FlashcardController } from '../controllers/flashcard.controller.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { validate } from '../middlewares/validate.middleware.js';
+import { aiGenerateLimiter } from '../middlewares/rateLimiter.middleware.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { createDeckSchema, generateFlashcardsSchema, reviewCardSchema, } from '../schemas/flashcard.schema.js';
+const router = Router();
+router.use(authMiddleware);
+router.get('/decks', asyncHandler(FlashcardController.getDecks));
+router.post('/decks', validate(createDeckSchema), asyncHandler(FlashcardController.createDeck));
+router.get('/decks/:id/cards', asyncHandler(FlashcardController.getDeckCards));
+router.get('/decks/:id/stats', asyncHandler(FlashcardController.getDeckStats));
+router.post('/decks/:id/generate', aiGenerateLimiter, validate(generateFlashcardsSchema), asyncHandler(FlashcardController.generateCards));
+router.post('/cards/:id/review', validate(reviewCardSchema), asyncHandler(FlashcardController.reviewCard));
+router.get('/due', asyncHandler(FlashcardController.getDueCards));
+export default router;

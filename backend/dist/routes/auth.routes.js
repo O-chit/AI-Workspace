@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { AuthController } from '../controllers/auth.controller.js';
+import { validate } from '../middlewares/validate.middleware.js';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authLimiter } from '../middlewares/rateLimiter.middleware.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { registerSchema, loginSchema, refreshTokenSchema, } from '../schemas/auth.schema.js';
+const router = Router();
+router.post('/register', authLimiter, validate(registerSchema), asyncHandler(AuthController.register));
+router.post('/login', authLimiter, validate(loginSchema), asyncHandler(AuthController.login));
+router.post('/refresh', validate(refreshTokenSchema), asyncHandler(AuthController.refresh));
+router.post('/logout', authMiddleware, asyncHandler(AuthController.logout));
+router.get('/me', authMiddleware, asyncHandler(AuthController.getMe));
+export default router;

@@ -1,1 +1,8 @@
 .env
+node_modules
+postman
+.postman
+demo
+.vscode
+README.md
+README(1).md
